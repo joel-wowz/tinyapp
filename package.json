@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/joel-wowz/tinyapp/issues"
   },
-  "homepage": "https://github.com/joel-wowz/tinyapp#readme"
+  "homepage": "https://github.com/joel-wowz/tinyapp#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
