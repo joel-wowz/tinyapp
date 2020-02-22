@@ -22,7 +22,7 @@
         </tr>
       </thead>
       <tbody>
-        <% for(let url in urls) { %>
+        <% for(let url of Object.keys(urls)) { %>
           <tr>
             <td><%= url %> </td>
             <td><%= urls[url] %> </td>
@@ -34,7 +34,7 @@
               </td>
           </tr>
         <% } %>
-        
+          
       </tbody>
     </table>
   </main>
