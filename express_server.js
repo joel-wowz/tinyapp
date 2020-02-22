@@ -6,7 +6,7 @@ const cookieParser = require(`cookie-parser`);
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-
+/// -------------------------- FUNCTIONS --------------------///
 function generateRandomString() {
   let randomString = '';
   for (let i = 0; i <= 6; i++) {
@@ -23,16 +23,27 @@ function checkID(key) {
   }
   return false;
 }
-/// ----- ----- ------ CONST VARIABLES -------------------///
+function urlsForUser(id) {
+  let isUser = req.cookies.user_id;
+  let urlsUsers = [];
+  for (let urls in urlDatabase) {
+    if (urlDatabase[urls].userID === isUser) {
+      urlsUsers.push(urlDatabase[urls]);
+      return urlsUsers;
+    }
+  }
+  return false;
+}
+/// ----- ----- ------ CONST USERS/DATABASE -------------------///
 const users = {
   '102830': {
     id: '102830',
     email: 'yeet@yeetmail.com',
     password: 'w0w',
   },
-  test123: {
+  test1235: {
     id: 'test123',
-    email: 'nice',
+    email: 'nice@nice.com',
     password: 'lol',
   },
 };
@@ -41,20 +52,22 @@ const urlDatabase = {
   b6UTxQ: { longURL: 'https://www.tsn.ca', userID: 'aJ48lW' },
   i3BoGr: { longURL: 'https://www.google.ca', userID: 'aJ48lW' },
 };
+
 /// ------------------ GET REQUESTS --------------------------///
+app.get('/test', (req, res) => {
+  res.send('test');
+});
 app.get('/urls.json', (req, res) => {
   res.json(urlDatabase);
 });
 
 app.get('/urls', (req, res) => {
-  //relook
   if (req.cookies['user_id']) {
     let templateVars = { user: req.cookies['user_id'], urls: urlDatabase };
     res.render('urls_index', templateVars);
   } else {
     res.redirect(`/login`);
   }
-  //find cookie and return if
 });
 
 app.get('/urls/new', (req, res) => {
@@ -98,7 +111,9 @@ app.get('/register', (req, res) => {
 app.post('/urls/new', (req, res) => {
   let shortURL = generateRandomString();
   let longURL = req.body.longURL;
-  urlDatabase[shortURL] = longURL;
+  let userID = req.cookies.user_id;
+  urlDatabase[shortURL] = { longURL, userID };
+  res.redirect(`/urls`);
 });
 
 app.post('/urls', (req, res) => {
@@ -114,10 +129,7 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 
 app.post('/urls/:id', (req, res) => {
   let shortURL = req.params.id;
-  console.log(shortURL);
-  console.log(shortURL);
   urlDatabase[shortURL] = req.body.longURL;
-  console.log(urlDatabase);
   res.redirect(`/urls`);
 });
 
@@ -149,7 +161,6 @@ app.post('/register', (req, res) => {
   if (!email || !password) {
     res.status(400).send('fillout the password and email and user');
   }
-
   if (emailCheck) {
     res.status(400).send('theres already an account linked to this email');
     res.redirect(`/register`);
@@ -160,6 +171,7 @@ app.post('/register', (req, res) => {
     email: email,
     password: password,
   };
+
   res.cookie('user_id', userID);
   res.redirect(`/urls`);
 });
