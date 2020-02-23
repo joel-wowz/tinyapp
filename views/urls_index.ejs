@@ -12,15 +12,15 @@
 <body>
   <main style="margin: 1em;">
     <h3>My URLs</h3>
-    <table class="table">
-      <thead>
-        <tr>
+      <table class="table">
+       <thead>
+         <tr>
           <th scope="col">Short URL</th>
           <th scope="col">Long URL</th>
           <th scope="col">Delete</th>
           <th scope="col">Edit</th>
         </tr>
-      </thead>
+       </thead>
       <tbody>
         <% for(let url in urls) { %>
           <tr>
@@ -28,17 +28,16 @@
             <td><%= urls[url]['longURL'] %> </td>
             <td>
               <form method="POST" action="/urls/<%= url %>/delete">
-                <button type="submit" class="btn btn-primary">Delete</button>
+              <button type="submit" class="btn btn-primary">Delete</button>
               </form>
             </td>
             <td> 
-              <form method="GET" action="/urls/<%= url %>/">
+                <form method="GET" action="/urls/<%= url %>/">  
                 <button type="submit" class="btn btn-primary">Edit</button>
               </form>
             </td>
           </tr>
         <% } %>
-          
       </tbody>
     </table>
   </main>
