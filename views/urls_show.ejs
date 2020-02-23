@@ -20,7 +20,13 @@
           </a>
         </p>
         <td>
-          <form method="POST" action="/urls/<%= shortURL %>"><input type="text" name="longURL"><button type="submit" class="btn btn-primary">TESTING EDIT</button></form></td>
+          <form class="form-inline" action="/urls/<%= shortURL %>" method="POST">
+            <div class="form-group mb-2">
+              <label for="newLongURL">Enter an updated URL:</label>
+              <input class="form-control" type="text" name="newLongURL" placeholder="Replacement URL" style="width: 300px; margin: 1em">
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+          </form>
       </div>
     <div class="card-footer text-muted"></div>
   </div>
