@@ -62,24 +62,23 @@ const urlDatabase = {
 };
 
 /// ------------------ GET REQUESTS --------------------------///
-app.get('/test', (req, res) => {
+app.get('/urls/test', (req, res) => {
+  let userID = req.cookies.user_id;
   let shortURL = req.params.shortURL;
-  console.log(shortURL)
-  console.log(urlsForUser('102830'));
+
 })
 
 app.get('/urls', (req, res) => {
   let user = users[req.cookies.user_id];
+  let shortURL = req.params.shortURL
   if (!user) {
     res.redirect(`/login`);
   } else {
+    let userURLS = urlsForUser(user['id'])
     let templateVars = {
       user: user.id,
-      urls: urlDatabase
+      urls: userURLS,
     };
-    let urlsData = urlsForUser(user)
-    console.log(urlsForUser)
-    console.log(urlsData);
     res.render('urls_index', templateVars);
   }
 });
@@ -149,21 +148,31 @@ app.post('/urls', (req, res) => {
     userID: req.cookies.user_id
   };
   urlDatabase[shortURL] = entry;
-  res.send(console.log(`entry testing:`, entry))
-
   res.redirect(`/urls/${urlDatabase['shortURL']}`);
 });
 
 app.post(`/urls/:shortURL`, (req, res) => {
-  let newLongURL = req.body.newLongURL;
-  let shortURL = req.params.shortURL;
-  let oldURL = urlDatabase[shortURL]
-  oldURL.longURL = newLongURL
-  res.redirect(`/urls`);
+  let userID = req.cookies.user_id;
+  let user = users[userID]
+  if (!user) {
+    res.redirect("https://alwaysjudgeabookbyitscover.com/")
+  } else {
+    let newLongURL = req.body.newLongURL;
+    let shortURL = req.params.shortURL;
+    let oldURL = urlDatabase[shortURL]
+    oldURL.longURL = newLongURL
+    res.redirect(`/urls`);
+  }
 });
 app.post('/urls/:shortURL/delete', (req, res) => {
-  delete urlDatabase[req.params.shortURL];
-  res.redirect(`/urls`);
+  let userID = req.cookies.user_id;
+  let user = users[userID]
+  if (!user) {
+    res.redirect("https://puu.sh/FdP9D/8f30309f90.gif")
+  } else {
+    delete urlDatabase[req.params.shortURL];
+    res.redirect(`/urls`);
+  }
 });
 
 app.post('/login', (req, res) => {
