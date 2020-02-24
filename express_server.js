@@ -3,6 +3,7 @@ const app = express();
 const PORT = 3000; // default port 8080
 const bodyParser = require('body-parser');
 const cookieParser = require(`cookie-parser`);
+const bcrypt = require('bcrypt')
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
   extended: false
@@ -182,7 +183,7 @@ app.post('/login', (req, res) => {
   if (!emailCheck) {
     res.status(403).send('no email associated here m8');
   }
-  if (password === emailCheck.password) {
+  if (bcrypt.compareSync(password, emailCheck.password)) {
     res.cookie('user_id', emailCheck.id);
     res.redirect('/urls');
   } else {
@@ -198,10 +199,11 @@ app.post('/logout', (req, res) => {
 app.post('/register', (req, res) => {
   let password = req.body.password;
   let email = req.body.email;
+  let hashedPassword = bcrypt.hashSync(password, 10)
   let userID = generateRandomString();
   let emailCheck = checkID(email);
   if (!email || !password) {
-    res.status(400).send('fillout the password and email and user');
+    res.status(400).send('fillout the password and email broski. No Fun Allowed.');
   }
   if (emailCheck) {
     res.status(400).send('theres already an account linked to this email');
@@ -211,8 +213,9 @@ app.post('/register', (req, res) => {
   users[userID] = {
     id: userID,
     email: email,
-    password: password,
+    password: hashedPassword,
   };
+
 
   res.cookie('user_id', userID);
   res.redirect(`/urls`);
