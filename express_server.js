@@ -40,7 +40,7 @@ app.get('/urls', (req, res) => {
   } else {
     let userURLS = urlsForUser(user.id, urlDatabase);
     let templateVars = {
-      user: user.id,
+      user: user,
       urls: userURLS,
     };
     res.render('urls_index', templateVars);
