@@ -26,5 +26,12 @@ function urlsForUser(id, database) {
   }
   return urlsdatabase;
 }
+function filterUrlsForUser(id, database) {
+  console.log(id);
+  if (database.length === 0) {
+    return false;
+  }
+  let urls = database.filter((url) => url);
+}
 
-module.exports = { generateRandomString, getUserByEmail, urlsForUser };
+module.exports = { generateRandomString, getUserByEmail, urlsForUser, filterUrlsForUser };

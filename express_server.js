@@ -4,7 +4,7 @@ const PORT = 3000; // default port 8080
 const bodyParser = require('body-parser');
 const cookieSession = require(`cookie-session`);
 const bcrypt = require('bcrypt');
-const { generateRandomString, getUserByEmail, urlsForUser } = require(`./helpers.js`);
+const { generateRandomString, getUserByEmail, urlsForUser, filterUrlsForUser } = require(`./helpers.js`);
 app.set('view engine', 'ejs');
 app.use(
   bodyParser.urlencoded({
@@ -24,12 +24,19 @@ const users = {};
 const urlDatabase = {};
 
 /// ------------------ GET REQUESTS --------------------------///
+app.get('/', (req, res) => {
+  let user = users[req.session.user_id];
+  if (!user) {
+    res.redirect('/register');
+  }
+  res.redirect('/urls');
+});
 
 app.get('/urls', (req, res) => {
   let user = users[req.session.user_id];
   let shortURL = req.params.shortURL;
   if (!user) {
-    res.redirect(`/login`);
+    res.redirect(`/register`);
   } else {
     let userURLS = urlsForUser(user.id, urlDatabase);
     let templateVars = {
