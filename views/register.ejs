@@ -4,6 +4,7 @@
 <head>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
     integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <link rel="stylesheet" href="/stylesheets/register.css" type="text/css">
   <title>TinyApp</title>
 </head>
 
@@ -17,21 +18,29 @@
       </div>
       </div>
     </nav>
+    <h1 class="register-page">
+      Create An Account
+    </h1>
     <div class="card text-center">
-      <h2>Register</h2>
+      <p>TinyApp is an App that allows users to shorten long URLS</p>
       <div class="card-body">
         <div class="form-group mb-2">
-          <form action="/register" method="POST">
-            <label>Email:</label>
-            <input type="text" name="email" />
-            <label>Password:</label>
-            <input type="password" name="password" />
+          <ul>
+            <form action="/register" method="POST">
+              <input type="text" name="email" placeholder="Email" />
+          </ul>
+          <ul>
+            <input type="password" name="password" placeholder="Password" />
+          </ul>
+          <ul>
             <input type="submit" value="Register" />
+          </ul>
           </form>
         </div>
       </div>
       </form>
       </td>
+      <p>Already Have an account?<a href="/login">Sign In</a></p>
   </header>
 </body>
 

@@ -17,7 +17,7 @@ app.use(
     keys: [ 'secret' ],
   }),
 );
-
+app.use(express.static('public'));
 /// ----- ----- ------ CONST USERS/DATABASE -------------------///
 const users = {};
 
