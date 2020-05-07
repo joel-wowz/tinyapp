@@ -33,5 +33,8 @@ function filterUrlsForUser(id, database) {
   }
   let urls = database.filter((url) => url);
 }
+const analytic = (database, req, shortURL) => {
+  database[shortURL].views += 1;
+};
 
-module.exports = { generateRandomString, getUserByEmail, urlsForUser, filterUrlsForUser };
+module.exports = { generateRandomString, getUserByEmail, urlsForUser, filterUrlsForUser, analytic };

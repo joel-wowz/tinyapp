@@ -5,7 +5,7 @@ const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
 const cookieSession = require(`cookie-session`);
 const bcrypt = require('bcrypt');
-const { generateRandomString, getUserByEmail, urlsForUser, filterUrlsForUser } = require(`./helpers.js`);
+const { generateRandomString, getUserByEmail, urlsForUser, filterUrlsForUser, analytic } = require(`./helpers.js`);
 app.set('view engine', 'ejs');
 app.use(methodOverride('_method'));
 app.use(
@@ -44,15 +44,6 @@ app.get('/urls', (req, res) => {
     let templateVars = {
       user: user,
       urls: userURLS,
-      visits: {
-        views: 0,
-        increment() {
-          views += 1;
-        },
-        test() {
-          console.log('hello');
-        },
-      },
     };
     res.render('urls_index', templateVars);
   }
@@ -77,21 +68,23 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/urls/:shortURL', (req, res) => {
-  let userID = req.session.user_id;
-  let user = users[userID];
-  let shortURL = req.params.shortURL;
-  let longURL = urlDatabase[shortURL]['longURL'];
+  const userID = req.session.user_id;
+  const user = users[userID];
+  const shortURL = req.params.shortURL;
+  const longURL = urlDatabase[shortURL]['longURL'];
   const templateVars = {
     user: user,
     urls: urlDatabase,
     longURL: longURL,
     shortURL: shortURL,
+    visits: [],
   };
   res.render('urls_show', templateVars);
 });
 
 app.get('/u/:shortURL', (req, res) => {
-  let urlRedirect = urlDatabase[req.params.shortURL]['longURL'];
+  const urlRedirect = urlDatabase[req.params.shortURL]['longURL'];
+  analytic(urlDatabase, req, req.params.shortURL);
   res.redirect(urlRedirect);
 });
 
@@ -110,29 +103,34 @@ app.post('/urls/new', (req, res) => {
   urlDatabase[shortURL] = {
     longURL: longURL,
     userID: userID,
+    views: 0,
+    uniqueViews: 0,
+    visits: [],
   };
   res.redirect(`/urls`);
 });
 
 app.post('/urls', (req, res) => {
-  let shortURL = generateRandomString();
-  let entry = {
+  const shortURL = generateRandomString();
+  const entry = {
     longURL: req.body.longURL,
     userID: req.session.user_id,
+    views: 0,
+    uniqueViews: 0,
   };
   urlDatabase[shortURL] = entry;
   res.redirect(`/urls/${urlDatabase['shortURL']}`);
 });
 
 app.put(`/urls/:shortURL`, (req, res) => {
-  let userID = req.session.user_id;
-  let user = users[userID];
+  const userID = req.session.user_id;
+  const user = users[userID];
   if (!user) {
     res.redirect('https://alwaysjudgeabookbyitscover.com/');
   } else {
-    let newLongURL = req.body.newLongURL;
-    let shortURL = req.params.shortURL;
-    let oldURL = urlDatabase[shortURL];
+    const newLongURL = req.body.newLongURL;
+    const shortURL = req.params.shortURL;
+    const oldURL = urlDatabase[shortURL];
     oldURL.longURL = newLongURL;
     res.redirect(`/urls`);
   }
