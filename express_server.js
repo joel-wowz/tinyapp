@@ -1,11 +1,13 @@
 const express = require('express');
 const app = express();
 const PORT = 3000; // default port 8080
+const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
 const cookieSession = require(`cookie-session`);
 const bcrypt = require('bcrypt');
 const { generateRandomString, getUserByEmail, urlsForUser, filterUrlsForUser } = require(`./helpers.js`);
 app.set('view engine', 'ejs');
+app.use(methodOverride('_method'));
 app.use(
   bodyParser.urlencoded({
     extended: false,
@@ -42,6 +44,15 @@ app.get('/urls', (req, res) => {
     let templateVars = {
       user: user,
       urls: userURLS,
+      visits: {
+        views: 0,
+        increment() {
+          views += 1;
+        },
+        test() {
+          console.log('hello');
+        },
+      },
     };
     res.render('urls_index', templateVars);
   }
@@ -113,7 +124,7 @@ app.post('/urls', (req, res) => {
   res.redirect(`/urls/${urlDatabase['shortURL']}`);
 });
 
-app.post(`/urls/:shortURL`, (req, res) => {
+app.put(`/urls/:shortURL`, (req, res) => {
   let userID = req.session.user_id;
   let user = users[userID];
   if (!user) {
@@ -126,7 +137,7 @@ app.post(`/urls/:shortURL`, (req, res) => {
     res.redirect(`/urls`);
   }
 });
-app.post('/urls/:shortURL/delete', (req, res) => {
+app.delete('/urls/:shortURL/', (req, res) => {
   let userID = req.session.user_id;
   let user = users[userID];
   if (!user) {

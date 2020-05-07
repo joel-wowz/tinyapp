@@ -22,22 +22,29 @@
           <th scope="col">Long URL</th>
           <th scope="col">Delete</th>
           <th scope="col">Edit</th>
+          <th scope="col">Visits</th>
         </tr>
       </thead>
       <tbody>
         <% for(let url in urls) { %>
         <tr>
-          <td><%= url %> </td>
-          <td><%= urls[url]['longURL'] %> </td>
+          <td> <a href="<%= urls[url]['longURL'] %>" target="_blank">
+              <p> <%= url %> </p>
+            </a>
+          </td>
+          <td><a href="<%= urls[url]['longURL'] %>"> <%= urls[url]['longURL'] %></a></td>
           <td>
-            <form method="POST" action="/urls/<%= url %>/delete">
+            <form method="POST" action="/urls/<%= url %>?_method=DELETE">
               <button type="submit" class="btn btn-primary">Delete</button>
             </form>
           </td>
           <td>
-            <form method="GET" action="/urls/<%= url %>/">
+            <form method="GET" action="/urls/<%= url %>">
               <button type="submit" class="btn btn-primary">Edit</button>
             </form>
+          </td>
+          <td>
+            <%= visits.views %>
           </td>
         </tr>
         <% } %>
